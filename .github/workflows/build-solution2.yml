@@ -1,0 +1,57 @@
+name: Build Solution2 C
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Build Solution1 A+B"]
+    types: [completed]
+
+jobs:
+  build_c:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout RepoC
+        uses: actions/checkout@v4
+
+      # Option 1 for POC: manually upload/download the artifact from the same workflow run.
+      # For cross-repo artifact download, use gh run download or actions/download-artifact with run-id/repository.
+      - name: Download A+B artifacts from RepoA latest successful run
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+        run: |
+          gh run list --repo YOUR_ORG/RepoA --workflow "Build Solution1 A+B" --branch main --status success --limit 1
+          $runId = gh run list --repo YOUR_ORG/RepoA --workflow "Build Solution1 A+B" --branch main --status success --limit 1 --json databaseId --jq '.[0].databaseId'
+          gh run download $runId --repo YOUR_ORG/RepoA --name vector-libs-x64-release --dir deps
+          Get-ChildItem -Recurse deps
+
+      - name: Copy dependent DLLs beside exe
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force bin\x64\Release | Out-Null
+          Copy-Item deps\VectorAdd\bin\VectorAdd.dll bin\x64\Release\
+          Copy-Item deps\VectorMul\bin\VectorMul.dll bin\x64\Release\
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build Solution2
+        shell: pwsh
+        run: |
+          msbuild Solution2_C.sln /m /p:Configuration=Release /p:Platform=x64
+
+      - name: Run demo exe
+        shell: pwsh
+        run: |
+          .\bin\x64\Release\VectorDemoApp.exe
+
+      - name: Upload final exe package
+        uses: actions/upload-artifact@v4
+        with:
+          name: vector-demo-app-x64-release
+          path: |
+            bin/x64/Release/VectorDemoApp.exe
+            bin/x64/Release/VectorAdd.dll
+            bin/x64/Release/VectorMul.dll

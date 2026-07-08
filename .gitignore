@@ -1,0 +1,49 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+Debug/
+Release/
+x64/
+x86/
+bin/
+obj/
+out/
+build/
+[Bb]uild/
+
+# C++ generated files
+*.obj
+*.pch
+*.pdb
+*.idb
+*.ilk
+*.exp
+*.lib
+*.dll
+*.exe
+*.log
+*.tlog
+*.lastbuildstate
+*.ipch
+*.iobj
+*.ipdb
+
+# NuGet / packages if used later
+packages/
+*.nupkg
+
+# CMake if added later
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+
+# OS/editor
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
