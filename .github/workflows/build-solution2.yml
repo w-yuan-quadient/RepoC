@@ -53,12 +53,11 @@ jobs:
           Write-Host "Resolved run id: $runId"
 
       - name: Download producer artifact
-        if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
         run: |
-          gh run download ${{ steps.resolve_run.outputs.run_id }} --repo YOUR_ORG/RepoA --name vector-libs-x64-release --dir deps
+          gh run download ${{ steps.resolve_run.outputs.run_id }} --repo w-yuan-quadient/RepoA --name vector-libs-x64-release --dir deps
 
       - name: Inspect downloaded artifact tree
         if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
