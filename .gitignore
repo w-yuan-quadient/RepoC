@@ -47,3 +47,4 @@ cmake_install.cmake
 Thumbs.db
 *.swp
 *.tmp
+.github/workflows/build-solution2 - Copy.yml
