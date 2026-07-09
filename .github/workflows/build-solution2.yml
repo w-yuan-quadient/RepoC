@@ -13,13 +13,12 @@ on:
         options:
           - "true"
           - "false"
-  workflow_run:
-    workflows: ["Build Solution1 A+B"]
-    types: [completed]
+  repository_dispatch:
+    types: [ repoa_build_success ]
 
 jobs:
   build_c:
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'push' || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch' }}
 
     runs-on: windows-2022
 
