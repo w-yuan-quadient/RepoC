@@ -60,13 +60,11 @@ jobs:
           gh run download ${{ steps.resolve_run.outputs.run_id }} --repo w-yuan-quadient/RepoA --name vector-libs-x64-release --dir deps
 
       - name: Inspect downloaded artifact tree
-        if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
         shell: pwsh
         run: |
           Get-ChildItem -Recurse deps
 
       - name: Copy dependent DLLs beside exe
-        if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force bin\x64\Release | Out-Null
