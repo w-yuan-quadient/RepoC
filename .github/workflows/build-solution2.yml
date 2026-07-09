@@ -33,12 +33,11 @@ jobs:
           Write-Host "Successfully triggered by RepoA workflow run completion."
 
       - name: List latest successful producer runs
-        if: ${{ github.event_name != 'workflow_dispatch' || inputs.run_full_pipeline == 'true' }}
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
         run: |
-          gh run list --repo YOUR_ORG/RepoA --workflow "Build Solution1 A+B" --branch main --status success --limit 5
+          gh run list --repo w-yuan-quadient/RepoA --workflow "Build Solution1 A+B" --branch main --status success --limit 5
 
       - name: Resolve latest successful run ID
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.run_full_pipeline == 'true' }}
