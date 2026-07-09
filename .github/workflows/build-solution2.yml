@@ -74,14 +74,21 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
+      - name: Stage headers and libs at expected relative paths
+        shell: pwsh
+        run: |
+          $base = "${{ github.workspace }}\.."
+          New-Item -ItemType Directory -Force "$base\RepoA\VectorAdd" | Out-Null
+          New-Item -ItemType Directory -Force "$base\RepoB\VectorMul" | Out-Null
+          Copy-Item deps\VectorAdd\include\VectorAdd.h "$base\RepoA\VectorAdd\"
+          Copy-Item deps\VectorAdd\lib\VectorAdd.lib   "$base\RepoA\VectorAdd\"
+          Copy-Item deps\VectorMul\include\VectorMul.h "$base\RepoB\VectorMul\"
+          Copy-Item deps\VectorMul\lib\VectorMul.lib   "$base\RepoB\VectorMul\"
+        
       - name: Build Solution2
         shell: pwsh
         run: |
-          msbuild Solution2_C.sln /m /p:Configuration=Release /p:Platform=x64 `
-            /p:VectorAddInclude=${{ github.workspace }}\deps\VectorAdd\include `
-            /p:VectorAddLib=${{ github.workspace }}\deps\VectorAdd\lib `
-            /p:VectorMulInclude=${{ github.workspace }}\deps\VectorMul\include `
-            /p:VectorMulLib=${{ github.workspace }}\deps\VectorMul\lib
+          msbuild Solution2_C.sln /m /p:Configuration=Release /p:Platform=x64
 
       - name: Run demo exe
         if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
