@@ -40,7 +40,7 @@ jobs:
           gh run list --repo w-yuan-quadient/RepoA --workflow "Build Solution1 A+B" --branch main --status success --limit 5
 
       - name: Resolve latest successful run ID
-        if: ${{ github.event_name != 'workflow_dispatch' || inputs.run_full_pipeline == 'true' }}
+        if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
         id: resolve_run
         shell: pwsh
         env:
@@ -54,7 +54,7 @@ jobs:
           Write-Host "Resolved run id: $runId"
 
       - name: Download producer artifact
-        if: ${{ github.event_name != 'workflow_dispatch' || inputs.run_full_pipeline == 'true' }}
+        if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
@@ -62,13 +62,13 @@ jobs:
           gh run download ${{ steps.resolve_run.outputs.run_id }} --repo YOUR_ORG/RepoA --name vector-libs-x64-release --dir deps
 
       - name: Inspect downloaded artifact tree
-        if: ${{ github.event_name != 'workflow_dispatch' || inputs.run_full_pipeline == 'true' }}
+        if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
         shell: pwsh
         run: |
           Get-ChildItem -Recurse deps
 
       - name: Copy dependent DLLs beside exe
-        if: ${{ github.event_name != 'workflow_dispatch' || inputs.run_full_pipeline == 'true' }}
+        if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force bin\x64\Release | Out-Null
@@ -76,23 +76,23 @@ jobs:
           Copy-Item deps\VectorMul\bin\VectorMul.dll bin\x64\Release\
 
       - name: Setup MSBuild
-        if: ${{ github.event_name != 'workflow_dispatch' || inputs.run_full_pipeline == 'true' }}
+        if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
         uses: microsoft/setup-msbuild@v2
 
       - name: Build Solution2
-        if: ${{ github.event_name != 'workflow_dispatch' || inputs.run_full_pipeline == 'true' }}
+        if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
         shell: pwsh
         run: |
           msbuild Solution2_C.sln /m /p:Configuration=Release /p:Platform=x64
 
       - name: Run demo exe
-        if: ${{ github.event_name != 'workflow_dispatch' || inputs.run_full_pipeline == 'true' }}
+        if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
         shell: pwsh
         run: |
           .\bin\x64\Release\VectorDemoApp.exe
 
       - name: Upload final exe package
-        if: ${{ github.event_name != 'workflow_dispatch' || inputs.run_full_pipeline == 'true' }}
+        if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: vector-demo-app-x64-release
