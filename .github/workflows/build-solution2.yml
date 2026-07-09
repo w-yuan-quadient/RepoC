@@ -84,7 +84,11 @@ jobs:
           Copy-Item deps\VectorAdd\lib\VectorAdd.lib   "$base\RepoA\VectorAdd\"
           Copy-Item deps\VectorMul\include\VectorMul.h "$base\RepoB\VectorMul\"
           Copy-Item deps\VectorMul\lib\VectorMul.lib   "$base\RepoB\VectorMul\"
-        
+          # Linker LIBPATH: ..\..\repoA\bin\x64\Release (hardcoded in vcxproj)
+          New-Item -ItemType Directory -Force "$base\repoA\bin\x64\Release" | Out-Null
+          Copy-Item deps\VectorAdd\lib\VectorAdd.lib "$base\repoA\bin\x64\Release\"
+          Copy-Item deps\VectorMul\lib\VectorMul.lib "$base\repoA\bin\x64\Release\"
+
       - name: Build Solution2
         shell: pwsh
         run: |
