@@ -98,7 +98,6 @@ jobs:
           msbuild Solution2_C.sln /m /p:Configuration=Release /p:Platform=x64
 
       - name: Run demo exe
-        if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
         shell: pwsh
         run: |
           .\bin\x64\Release\VectorDemoApp.exe
