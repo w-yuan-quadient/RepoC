@@ -78,7 +78,11 @@ jobs:
         if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
         shell: pwsh
         run: |
-          msbuild Solution2_C.sln /m /p:Configuration=Release /p:Platform=x64
+          msbuild Solution2_C.sln /m /p:Configuration=Release /p:Platform=x64 `
+            /p:VectorAddInclude=${{ github.workspace }}\deps\VectorAdd\include `
+            /p:VectorAddLib=${{ github.workspace }}\deps\VectorAdd\lib `
+            /p:VectorMulInclude=${{ github.workspace }}\deps\VectorMul\include `
+            /p:VectorMulLib=${{ github.workspace }}\deps\VectorMul\lib
 
       - name: Run demo exe
         if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
