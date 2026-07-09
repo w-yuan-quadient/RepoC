@@ -5,6 +5,7 @@
 static void print_vector(const char* name, const double* v, int size)
 {
     // this is a empty comment line
+    std::cout << "New Interface:\n";
     std::cout << name << ": ";
     for (int i = 0; i < size; ++i)
     {
