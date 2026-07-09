@@ -72,7 +72,6 @@ jobs:
           Copy-Item deps\VectorMul\bin\VectorMul.dll bin\x64\Release\
 
       - name: Setup MSBuild
-        if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
         uses: microsoft/setup-msbuild@v2
 
       - name: Build Solution2
