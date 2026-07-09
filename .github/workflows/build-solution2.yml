@@ -75,7 +75,6 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Build Solution2
-        if: ${{ github.event_name != 'workflow_dispatch' && inputs.run_full_pipeline == 'true' }}
         shell: pwsh
         run: |
           msbuild Solution2_C.sln /m /p:Configuration=Release /p:Platform=x64 `
